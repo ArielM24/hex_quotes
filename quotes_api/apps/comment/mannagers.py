@@ -52,31 +52,33 @@ class CommentManager(models.DjongoManager):
     
     def update_ups(self, _id, device_id):
         comment = self.filter(_id=_id).first()
-        if device_id in comment.downs:
-            comment.downs.remove(device_id)
-            comment.downs_count -= 1
-        if device_id in comment.ups:
-            comment.ups.remove(device_id)
-            comment.ups_count -= 1
-        else:
-            comment.ups.append(device_id)
-            comment.ups_count += 1
+        if comment is not None:
+            if device_id in comment.downs:
+                comment.downs.remove(device_id)
+                comment.downs_count -= 1
+            if device_id in comment.ups:
+                comment.ups.remove(device_id)
+                comment.ups_count -= 1
+            else:
+                comment.ups.append(device_id)
+                comment.ups_count += 1
             
-        comment.save()
+            comment.save()
         
         return comment
     
     def update_downs(self, _id, device_id):
         comment = self.filter(_id=_id).first()
-        if device_id in comment.ups:
-            comment.ups.remove(device_id)
-            comment.ups_count -= 1
-        if device_id in comment.downs:
-            comment.downs.remove(device_id)
-            comment.downs_count -= 1
-        else:
-            comment.downs.append(device_id)
-            comment.downs_count += 1
-            
-        comment.save()
+        if comment is not None:
+            if device_id in comment.ups:
+                comment.ups.remove(device_id)
+                comment.ups_count -= 1
+            if device_id in comment.downs:
+                comment.downs.remove(device_id)
+                comment.downs_count -= 1
+            else:
+                comment.downs.append(device_id)
+                comment.downs_count += 1
+                
+            comment.save()
         return comment

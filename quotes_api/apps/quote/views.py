@@ -6,9 +6,6 @@ from .serializers import *
 from bson import ObjectId
 # Create your views here.
 
-
-
-        
 class QuotesCreateView(APIView):
     def post(self, request):
         data=QuotesCreateSerializer(data=request.data)
@@ -31,24 +28,10 @@ class QuotesHomeView(APIView):
             'device_id': rp(request,'device_id'),
         })
         if data.is_valid():    
-            quotes = Quote.objects.mongo_aggregate(
-                [{'$sample': {'size': 5}}]
-            )
+            quotes = Quote.objects.find_random_home(
+               device_id = data.validated_data['device_id'])
+            
             js = QuoteSerializer(quotes, many=True).data
-            device_id = data.validated_data['device_id']
-            i = 0
-            while i < len(js):
-                if device_id in js[i]['ups']:
-                    js[i]['ups'] = True
-                    js[i]['downs'] = False
-                elif device_id in js[i]['downs']:
-                    js[i]['ups'] = False
-                    js[i]['downs'] = True
-                else:
-                    js[i]['ups'] = False
-                    js[i]['downs'] = False
-                js[i]['comments'] = None
-                i += 1
             return Response(data={'ok':True,
                                 'message': 'random quotes', 'quotes': js})
         else:
@@ -80,22 +63,10 @@ class QuotesUpUpdateView(APIView):
         })
         if data.is_valid():
             print(data.validated_data)
-            quote = Quote.objects.filter(
-                _id=ObjectId(data.validated_data['quote_id'])).first()
+            quote = Quote.objects.update_ups(
+                device_id = data.validated_data['device_id'],
+                _id=ObjectId(data.validated_data['quote_id']))
             if quote is not None:
-                device_id = data.validated_data['device_id']
-                if device_id in quote.downs:
-                    quote.downs.remove(device_id)
-                    quote.downs_count -= 1
-                    
-                if device_id in quote.ups:
-                    quote.ups.remove(device_id)
-                    quote.ups_count -= 1
-                else:
-                    quote.ups.append(device_id)
-                    quote.ups_count += 1
-                    
-                quote.save()
                 return Response(data={'ok': True, 'message': 'quote ups updated successfully'})
             else:
                 return Response(data={'ok':False, 'message': 'invalid quote id'})
@@ -110,22 +81,10 @@ class QuotesDownUpdateView(APIView):
         })
         if data.is_valid():
             print(data.validated_data)
-            quote = Quote.objects.filter(
-                _id=ObjectId(data.validated_data['quote_id'])).first()
+            quote = Quote.objects.update_downs(
+                device_id = data.validated_data['device_id'],
+                _id=ObjectId(data.validated_data['quote_id']))
             if quote is not None:
-                device_id = data.validated_data['device_id']
-                if device_id in quote.ups:
-                    quote.ups.remove(device_id)
-                    quote.ups_count -= 1
-                    
-                if device_id in quote.downs:
-                    quote.downs.remove(device_id)
-                    quote.downs_count -= 1
-                else:
-                    quote.downs.append(device_id)
-                    quote.downs_count += 1
-                    
-                quote.save()
                 return Response(data={'ok': True, 'message': 'quote downs updated successfully'})
             else:
                 return Response(data={'ok':False, 'message': 'invalid quote id'})

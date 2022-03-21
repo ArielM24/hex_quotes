@@ -10,6 +10,15 @@ db.Comment.aggregate(
   [
     {
       /**
+       * size: The number of documents to sample.
+       */
+      $sample: {
+        size: 
+        2
+      }
+    },
+    {
+      /**
        * specifications: The fields to
        *   include or exclude.
        */
