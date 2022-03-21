@@ -16,10 +16,6 @@ class CommentableModelSerializer(serializers.Serializer):
         fields = ['_id', 'content', 'ups', 'ups_count', 'downs',
          'downs_count', 'comments', 'comments_count', 'date']
         
-class CommentSerializer(CommentableModelSerializer,serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = CommentableModelSerializer.Meta.fields + ['original_quote']
 
 class QuoteSerializer(CommentableModelSerializer,serializers.ModelSerializer):
     class Meta:
@@ -30,17 +26,7 @@ class QuotesCreateSerializer(serializers.Serializer):
     author = serializers.CharField(required=True)
     content = serializers.CharField(required=True)
     
-class CommentToQuoteSerializer(serializers.Serializer):
-    content = serializers.CharField(required=True)
-    quote_id = serializers.CharField(required=True)
-    
-class CommentToCommentSerializer(serializers.Serializer):
-    content = serializers.CharField(required=True)
-    comment_id = serializers.CharField(required=True)
-    
-class CommentsReadSerializer(serializers.Serializer):
-    quote_id = serializers.CharField(required=True)
-    device_id = serializers.CharField(required=True)
+
     
 class QuotesUpUpdateSerializer(serializers.Serializer):
     quote_id = serializers.CharField(required=True)
@@ -50,13 +36,7 @@ class QuotesDownUpdateSerializer(serializers.Serializer):
     quote_id = serializers.CharField(required=True)
     device_id = serializers.CharField(required=True)
     
-class CommentsUpUpdateSerializer(serializers.Serializer):
-    comment_id = serializers.CharField(required=True)
-    device_id = serializers.CharField(required=True)
-    
-class CommentsDownUpdateSerializer(serializers.Serializer):
-    comment_id = serializers.CharField(required=True)
-    device_id = serializers.CharField(required=True)
+
     
 class QuotesHomeSerializer(serializers.Serializer):
     device_id = serializers.CharField(required=True)

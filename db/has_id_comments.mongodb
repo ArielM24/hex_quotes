@@ -1,0 +1,30 @@
+// MongoDB Playground
+// To disable this template go to Settings | MongoDB | Use Default Template For Playground.
+// Make sure you are connected to enable completions and to be able to run a playground.
+// Use Ctrl+Space inside a snippet or a string literal to trigger completions.
+
+// Select the database to use.
+use('hexquotes');
+
+db.Comment.aggregate(
+  [
+    {
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      $project: {
+        "_id": "$_id",
+        "original_quote": "$original_quote",
+        "has_comment": {
+          $in: ["62352eac0a4b004f1e257a76", "$comments"]
+        },
+        "ups": {
+          $in: ["device2", "$ups"]
+        }
+      }
+    }
+  ]
+)
+
+

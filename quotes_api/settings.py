@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     #Third
     'rest_framework',
     #Local
-    'quotes_api.apps.quote'
+    'quotes_api.apps.quote',
+    'quotes_api.apps.comment'
 ]
 
 MIDDLEWARE = [

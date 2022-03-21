@@ -16,7 +16,17 @@ class CommentableModel(models.Model):
     class Meta:
         abstract = True
 
-class Quote(CommentableModel):
+class Quote(models.Model):
+    _id = models.ObjectIdField(primary_key=True, db_column='_id')
+    content = models.TextField()
+    ups = models.JSONField(blank=True, null=True, default=list)
+    ups_count = models.PositiveIntegerField(default=0)
+    downs = models.JSONField(blank=True, null=True, default=list)
+    downs_count = models.PositiveIntegerField(default=0)
+    comments = models.JSONField(blank=True, null=True, default=list)
+    comments_count = models.PositiveIntegerField(default=0)
+    date = models.DateTimeField()
+    
     author = models.TextField()
     enabled = models.BooleanField()
     days_to_die = models.PositiveIntegerField(default=7)
@@ -27,11 +37,3 @@ class Quote(CommentableModel):
         return "{} {}".format(self._id, self.author)
 
 
-class Comment(CommentableModel):
-    original_quote = models.TextField(default="")
-    objects = CommentManager()
-    class Meta:
-        db_table = 'Comment'
-    
-    def __str__(self):
-        return "{}".format(self._id)
