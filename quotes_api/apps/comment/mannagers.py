@@ -17,3 +17,29 @@ class CommentManager(models.DjongoManager):
             date=timezone.now(),
         )
         return comment
+    
+    def find_ups_downs_comments(self, device_id):
+        comments = self.mongo_aggregate(
+                [
+                    {
+                        '$project': {
+                            '_id': '$_id',
+                            'content': 'content',
+                            'original_quote': '$original_quote',
+                            'ups_count': '$ups_count',
+                            'downs_count': '$downs_count',
+                            'comments': '$comments',
+                            'comments_count': '$comments_count',
+                            'date': '$date',
+                            
+                            "ups": {
+                                '$in': [device_id, '$ups']
+                            },
+                            "downs": {
+                                '$in': [device_id, '$downs']
+                            }
+                        }
+                    }
+                ]
+            )
+        return comments

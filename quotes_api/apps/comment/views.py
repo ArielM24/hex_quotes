@@ -89,23 +89,9 @@ class CommentsReadView(APIView):
         if data.is_valid():
             print(data.validated_data)
             device_id = data.validated_data['device_id']
-            comments = Comment.objects.filter(
-                original_quote=ObjectId(data.validated_data['quote_id']))
+            comments = Comment.objects.find_ups_downs_comments(device_id)
+            
             js = CommentSerializer(comments, many=True).data
-            i = 0
-            while i < len(comments):
-                if device_id in comments[i].ups:
-                    js[i]['ups'] = True
-                    js[i]['downs'] = False
-                    
-                elif device_id in comments[i].downs:
-                    js[i]['downs'] = True
-                    js[i]['ups'] = False
-                else:
-                    js[i]['ups'] = False
-                    js[i]['downs'] = False
-                    
-                i += 1
                     
             print(comments)
             return Response(data={'ok': True, 'message': 'list of comments',
